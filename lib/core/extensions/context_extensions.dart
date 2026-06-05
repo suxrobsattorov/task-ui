@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Reference Figma frame size. Update both values to match the design's
-/// top-level frame (e.g. iPhone 13 mini = 375×812).
-const Size kDesignFrame = Size(375, 812);
+/// Reference Figma frame size — the "Candidate Test" frames (iPhone 15 Pro).
+const Size kDesignFrame = Size(393, 852);
 
 /// Responsive helpers so [MediaQuery] is wrapped once, not scattered around.
 ///

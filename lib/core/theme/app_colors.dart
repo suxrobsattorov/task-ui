@@ -1,33 +1,28 @@
 import 'package:flutter/painting.dart';
 
-/// Single source of truth for all colors in the app.
-///
-/// The values below are **neutral placeholders** so the project compiles.
-/// Replace each token with the exact HEX from Figma — never invent colors.
+/// Color tokens extracted 1:1 from the Figma "Candidate Test" (dark theme).
 abstract final class AppColors {
-  // Brand
-  static const Color primary = Color(0xFF2F6BFF);
-  static const Color primaryDark = Color(0xFF1E47B0);
-
-  // Surfaces
-  static const Color background = Color(0xFFF6F7FB);
-  static const Color surface = Color(0xFFFFFFFF);
+  // Base
+  static const Color bg = Color(0xFF040811); // page background / plate ink
+  static const Color accent = Color(0xFF00D1FF); // cyan accent
+  static const Color green = Color(0xFF00C950); // call buttons
+  static const Color flagBlue = Color(0xFF0099B5);
 
   // Text
-  static const Color textPrimary = Color(0xFF1A1C1E);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textTertiary = Color(0xFF9CA3AF);
-
-  // Lines
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color divider = Color(0xFFEEF0F3);
-
-  // Status
-  static const Color success = Color(0xFF22C55E);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFEF4444);
-
-  // Generic
+  static const Color textPrimary = Color(0xFFFFFFFF);
+  static const Color textMuted = Color(
+    0xFF9CA3AF,
+  ); // placeholders, timestamps, idle icons
   static const Color white = Color(0xFFFFFFFF);
-  static const Color black = Color(0xFF000000);
+
+  // Glass / lines
+  static const Color glassTint = Color(0xFF0F172A); // base fill behind blur
+  static const Color glassBorder = Color(0x1FFFFFFF); // white ~12%
+  static const Color divider = Color(0xFF1C202A); // bottom-bar hairline
+
+  // Derived (opacity-baked)
+  static const Color bubbleFill = Color(0x3300D1FF); // accent @ 20%
+  static const Color accentGlow = Color(0x9900D1FF); // accent @ 60%
+  static const Color sendNotifFill = Color(0x3300D1FF); // accent @ 20%
+  static const Color scrim = Color(0x99000000); // QR dark overlay @ 60%
 }

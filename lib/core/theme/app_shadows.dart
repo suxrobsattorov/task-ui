@@ -1,21 +1,16 @@
 import 'package:flutter/painting.dart';
 
-/// Elevation / shadow tokens. Map Figma "Effects" (X, Y, blur, spread,
-/// color, opacity) directly onto these [BoxShadow] lists.
+import 'app_colors.dart';
+
+/// Glow / shadow tokens (mapped from Figma "Effects").
 abstract final class AppShadows {
-  static const List<BoxShadow> subtle = [
-    BoxShadow(
-      color: Color(0x0D000000), // black 5%
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
+  /// Cyan glow under the primary "Отправить уведомление" button.
+  static const List<BoxShadow> accentGlow = [
+    BoxShadow(color: AppColors.accentGlow, blurRadius: 50, spreadRadius: -6),
   ];
 
-  static const List<BoxShadow> card = [
-    BoxShadow(
-      color: Color(0x14000000), // black 8%
-      blurRadius: 16,
-      offset: Offset(0, 8),
-    ),
+  /// Subtle green halo around the call buttons.
+  static const List<BoxShadow> greenGlow = [
+    BoxShadow(color: Color(0x3300C950), blurRadius: 24, spreadRadius: -10),
   ];
 }

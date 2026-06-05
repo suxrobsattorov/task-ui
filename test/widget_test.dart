@@ -1,12 +1,24 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:task_ui/main.dart';
+import 'package:task_ui/core/theme/app_theme.dart';
+import 'package:task_ui/features/other_car/presentation/pages/car_details_page.dart';
 
 void main() {
-  testWidgets('App boots and shows the foundation placeholder',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const TaskUiApp());
+  testWidgets('Car details renders title and key actions', (
+    WidgetTester tester,
+  ) async {
+    // Render at the design frame size (iPhone 15 Pro) so the fixed layout fits.
+    tester.view.physicalSize = const Size(393 * 3, 852 * 3);
+    tester.view.devicePixelRatio = 3.0;
+    addTearDown(tester.view.reset);
 
-    expect(find.text('Design system tayyor'), findsOneWidget);
+    await tester.pumpWidget(
+      MaterialApp(theme: AppTheme.dark, home: const CarDetailsPage()),
+    );
+
+    expect(find.text('Детали'), findsOneWidget);
+    expect(find.text('Связаться с владельцем'), findsOneWidget);
+    expect(find.text('Отправить уведомление'), findsOneWidget);
   });
 }
