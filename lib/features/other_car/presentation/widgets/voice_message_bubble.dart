@@ -8,7 +8,6 @@ import '../../../../core/widgets/app_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../models/chat_message.dart';
 
-/// Outgoing voice message: play/pause button + waveform + duration.
 class VoiceMessageBubble extends StatelessWidget {
   const VoiceMessageBubble({
     super.key,

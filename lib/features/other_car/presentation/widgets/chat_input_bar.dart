@@ -8,8 +8,6 @@ import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_image.dart';
 
-/// Bottom message bar with three states: idle (mic), typing (send) and
-/// recording (live timer + glowing mic).
 class ChatInputBar extends StatefulWidget {
   const ChatInputBar({
     super.key,

@@ -1,9 +1,6 @@
-/// All UI copy (static Russian, taken verbatim from the Figma design).
 abstract final class AppStrings {
-  // QR scan
   static const String qrTitle = 'Сканировать QR-код';
 
-  // Car details
   static const String detailsTitle = 'Детали';
   static const String contactOwner = 'Связаться с владельцем';
   static const String carName = 'Onix';
@@ -13,7 +10,6 @@ abstract final class AppStrings {
   static const String call2 = 'Позвонить 2';
   static const String sendNotification = 'Отправить уведомление';
 
-  // Notification picker
   static const String chooseNotification = 'Выберите текст уведомления';
   static const String send = 'Отправить';
   static const List<String> notifications = [
@@ -23,7 +19,6 @@ abstract final class AppStrings {
     'Вы продаёте машину? Интересует, свяжитесь, пожалуйста',
   ];
 
-  // Chat
   static const String chatTitle = 'Переписка';
   static const String messageHint = 'Сообщение';
   static const String reply = 'Уже выхожу';

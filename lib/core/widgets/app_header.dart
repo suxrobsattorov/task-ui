@@ -6,8 +6,6 @@ import '../theme/app_text_styles.dart';
 import 'app_image.dart';
 import 'glass_circle_button.dart';
 
-/// Shared top bar: centered title with a frosted back button on the left.
-/// Matches Figma header frame (56 tall, back button 36, gutter 20).
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key, required this.title, this.onBack});
 
@@ -28,7 +26,12 @@ class AppHeader extends StatelessWidget {
               child: GlassCircleButton(
                 size: 36,
                 onTap: onBack ?? () => Navigator.maybePop(context),
-                child: const AppImage(AppAssets.icBack, width: 20, height: 20),
+                child: const AppImage(
+                  AppAssets.icBack,
+                  width: 20,
+                  height: 20,
+                  color: Color(0XFF9CA3AF),
+                ),
               ),
             ),
           ),

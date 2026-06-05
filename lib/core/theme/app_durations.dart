@@ -1,4 +1,3 @@
-/// Animation duration tokens — keep motion consistent across the app.
 abstract final class AppDurations {
   static const Duration fast = Duration(milliseconds: 150);
   static const Duration normal = Duration(milliseconds: 250);

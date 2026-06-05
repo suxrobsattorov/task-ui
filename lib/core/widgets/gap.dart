@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-/// Lightweight spacing widget — replaces repetitive `SizedBox` calls.
-/// Works inside both Row and Column.
 class Gap extends StatelessWidget {
   const Gap(this.size, {super.key});
 

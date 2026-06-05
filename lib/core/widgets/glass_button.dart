@@ -5,7 +5,6 @@ import '../theme/app_radius.dart';
 import '../theme/app_text_styles.dart';
 import 'glass_container.dart';
 
-/// Pill / rounded frosted-glass button used for primary and call actions.
 class GlassButton extends StatelessWidget {
   const GlassButton({
     super.key,

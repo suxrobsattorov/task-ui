@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Thin wrapper over [Image.asset]. Pass [color] to tint a monochrome glyph
-/// (uses srcIn so the alpha shape is recolored).
 class AppImage extends StatelessWidget {
   const AppImage(
     this.asset, {

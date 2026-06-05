@@ -15,7 +15,6 @@ import '../widgets/license_plate.dart';
 import '../widgets/owner_note.dart';
 import '../widgets/social_links.dart';
 
-/// "Детали" — scanned car info and ways to contact the owner.
 class CarDetailsPage extends StatelessWidget {
   const CarDetailsPage({super.key, this.onSendNotification});
 

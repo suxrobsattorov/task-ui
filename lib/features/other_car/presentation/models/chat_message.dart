@@ -1,7 +1,5 @@
-/// Who sent a chat message.
 enum ChatAuthor { me, other }
 
-/// Base type for a chat message. Sealed so the UI can pattern-match exhaustively.
 sealed class ChatMessage {
   const ChatMessage({
     required this.id,
@@ -11,10 +9,9 @@ sealed class ChatMessage {
 
   final String id;
   final ChatAuthor author;
-  final String time; // pre-formatted "HH:mm"
+  final String time;
 }
 
-/// A plain text bubble.
 class TextMessage extends ChatMessage {
   const TextMessage({
     required super.id,
@@ -26,7 +23,6 @@ class TextMessage extends ChatMessage {
   final String text;
 }
 
-/// A voice message bubble (play button + waveform + duration).
 class VoiceMessage extends ChatMessage {
   const VoiceMessage({
     required super.id,
@@ -35,5 +31,5 @@ class VoiceMessage extends ChatMessage {
     required this.duration,
   });
 
-  final String duration; // "0:03"
+  final String duration;
 }

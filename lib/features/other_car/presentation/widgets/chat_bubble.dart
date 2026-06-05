@@ -8,8 +8,6 @@ import '../../../../core/widgets/app_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 import '../models/chat_message.dart';
 
-/// A text chat bubble. Outgoing = cyan glass on the right; incoming = neutral
-/// glass on the left with the owner's avatar.
 class ChatBubble extends StatelessWidget {
   const ChatBubble({super.key, required this.message});
 

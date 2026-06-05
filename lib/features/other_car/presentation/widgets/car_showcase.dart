@@ -6,7 +6,6 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_image.dart';
 
-/// Chevrolet logo + "Onix" name above the car photo with a cyan glow beneath.
 class CarShowcase extends StatelessWidget {
   const CarShowcase({super.key});
 

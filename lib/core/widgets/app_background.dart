@@ -4,8 +4,6 @@ import '../constants/app_assets.dart';
 import '../theme/app_colors.dart';
 import 'app_image.dart';
 
-/// Dark page background with the faint circuit-board pattern positioned exactly
-/// as in Figma ([-31, 128] · 421×724).
 class AppBackground extends StatelessWidget {
   const AppBackground({super.key, required this.child, this.opacity = 0.42});
 

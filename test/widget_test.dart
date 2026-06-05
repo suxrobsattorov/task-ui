@@ -8,7 +8,6 @@ void main() {
   testWidgets('Car details renders title and key actions', (
     WidgetTester tester,
   ) async {
-    // Render at the design frame size (iPhone 15 Pro) so the fixed layout fits.
     tester.view.physicalSize = const Size(393 * 3, 852 * 3);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);

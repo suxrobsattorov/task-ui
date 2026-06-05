@@ -1,4 +1,3 @@
-/// 4-pt spacing scale. Use instead of magic numbers for gaps, padding, margin.
 abstract final class AppSpacing {
   static const double s2 = 2;
   static const double s4 = 4;
@@ -16,6 +15,5 @@ abstract final class AppSpacing {
   static const double s56 = 56;
   static const double s64 = 64;
 
-  /// Horizontal page gutter used across all screens (Figma left/right = 20).
   static const double gutter = 20;
 }

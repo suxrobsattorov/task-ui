@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../models/chat_message.dart';
 
-/// Holds the conversation and the input/voice state for the chat screen.
 class ChatController extends ChangeNotifier {
   ChatController({String? firstMessage}) {
     _messages.add(

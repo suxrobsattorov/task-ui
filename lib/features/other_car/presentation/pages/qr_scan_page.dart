@@ -7,11 +7,12 @@ import '../../../../core/widgets/app_header.dart';
 import '../../../../core/widgets/app_image.dart';
 import '../../../../core/widgets/glass_circle_button.dart';
 
-/// "Сканировать QR-код" — camera viewfinder with the scannable iQuarix sticker.
 class QrScanPage extends StatelessWidget {
   const QrScanPage({super.key, this.onScanned});
 
   final VoidCallback? onScanned;
+
+  static const double _frameSize = 250;
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +22,35 @@ class QrScanPage extends StatelessWidget {
           const Positioned.fill(
             child: AppImage(AppAssets.bgCamera, fit: BoxFit.cover),
           ),
-          const Positioned.fill(child: ColoredBox(color: AppColors.scrim)),
-
-          // Viewfinder frame + scannable sticker (tap to "scan").
-          const Positioned(
-            left: 72,
-            top: 331,
-            child: AppImage(AppAssets.qrFrame, width: 250, height: 250),
+          const Positioned.fill(
+            child: CustomPaint(
+              painter: _ScrimCutoutPainter(
+                cutoutSize: _frameSize,
+                radius: 15,
+                color: AppColors.scrim,
+              ),
+            ),
           ),
-          Positioned(
-            left: 93,
-            top: 312,
-            child: GestureDetector(
-              onTap: onScanned,
-              child: const AppImage(
-                AppAssets.qrSticker,
-                width: 214,
-                height: 268,
+
+          Positioned.fill(
+            child: Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const AppImage(
+                    AppAssets.qrFrame,
+                    width: _frameSize,
+                    height: _frameSize,
+                  ),
+                  GestureDetector(
+                    onTap: onScanned,
+                    child: const AppImage(
+                      AppAssets.qrSticker,
+                      width: 214,
+                      height: 268,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -49,10 +62,9 @@ class QrScanPage extends StatelessWidget {
             child: AppHeader(title: AppStrings.qrTitle),
           ),
 
-          // Bottom actions: flash · flip camera.
           Positioned(
             left: 20,
-            top: 757,
+            bottom: 35,
             child: GlassCircleButton(
               size: 60,
               onTap: () {},
@@ -60,8 +72,8 @@ class QrScanPage extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 313,
-            top: 757,
+            right: 20,
+            bottom: 35,
             child: GlassCircleButton(
               size: 60,
               onTap: () {},
@@ -76,4 +88,36 @@ class QrScanPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ScrimCutoutPainter extends CustomPainter {
+  const _ScrimCutoutPainter({
+    required this.cutoutSize,
+    required this.radius,
+    required this.color,
+  });
+
+  final double cutoutSize;
+  final double radius;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cutout = Rect.fromCenter(
+      center: size.center(Offset.zero),
+      width: cutoutSize,
+      height: cutoutSize,
+    );
+    final overlay = Path()..addRect(Offset.zero & size);
+    final hole = Path()
+      ..addRRect(RRect.fromRectAndRadius(cutout, Radius.circular(radius)));
+    canvas.drawPath(
+      Path.combine(PathOperation.difference, overlay, hole),
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ScrimCutoutPainter old) =>
+      old.cutoutSize != cutoutSize || old.radius != radius || old.color != color;
 }

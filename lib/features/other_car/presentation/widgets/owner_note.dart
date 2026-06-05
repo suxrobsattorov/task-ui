@@ -7,7 +7,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_image.dart';
 import '../../../../core/widgets/glass_container.dart';
 
-/// Glass pill with the owner's note and a chat badge overlapping the top-left.
 class OwnerNote extends StatelessWidget {
   const OwnerNote({super.key});
 

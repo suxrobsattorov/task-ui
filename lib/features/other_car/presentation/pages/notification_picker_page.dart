@@ -11,7 +11,6 @@ import '../../../../core/widgets/app_header.dart';
 import '../../../../core/widgets/gap.dart';
 import '../../../../core/widgets/glass_button.dart';
 
-/// "Выберите текст уведомления" — wheel-style picker of preset messages.
 class NotificationPickerPage extends StatefulWidget {
   const NotificationPickerPage({super.key, this.onSend});
 
@@ -22,10 +21,8 @@ class NotificationPickerPage extends StatefulWidget {
 }
 
 class _NotificationPickerPageState extends State<NotificationPickerPage> {
-  // Figma: gap between the screen title and the selection band.
   static const double _titleToBand = 152;
 
-  // Opacity ramp for the upcoming (non-selected) options.
   static const List<double> _fade = [0.40, 0.20, 0.10];
 
   int _selected = 0;

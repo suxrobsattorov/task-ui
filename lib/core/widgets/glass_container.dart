@@ -2,17 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Frosted "liquid glass" surface (iOS 26 style) — the signature look of the
-/// design (buttons, bubbles, header chips).
-///
-/// Rebuilds Figma's translucent glass with four light cues over a backdrop
-/// blur:
-///  * a vertical body gradient — a bright sheen on top fading to a
-///    near-transparent bottom,
-///  * a specular hairline rim, brightest at the top-left and wrapping to a
-///    faint bottom-right edge (not a flat uniform border),
-///  * a soft "wet" highlight along the top lip, and
-///  * a soft outer drop shadow so the surface lifts off the background.
+import '../theme/app_colors.dart';
+
 class GlassContainer extends StatelessWidget {
   const GlassContainer({
     super.key,
@@ -27,48 +18,22 @@ class GlassContainer extends StatelessWidget {
   });
 
   final BorderRadius borderRadius;
-
-  /// Base tint of the body. When null a neutral white glass is used; pass a
-  /// translucent colour (e.g. the cyan bubble fill) to tint the surface.
   final Color? fill;
 
-  /// Base hue of the specular rim. Defaults to white.
   final Color? borderColor;
   final double borderWidth;
   final double blurSigma;
 
-  /// Extra shadows (e.g. an accent glow) layered over the default depth shadow.
   final List<BoxShadow>? boxShadow;
   final EdgeInsetsGeometry? padding;
   final Widget? child;
 
-  /// Soft depth shadow so the glass floats off the background.
-  static const BoxShadow _depth = BoxShadow(
-    color: Color(0x40000000),
-    blurRadius: 18,
-    offset: Offset(0, 10),
-    spreadRadius: -8,
-  );
-
   @override
   Widget build(BuildContext context) {
-    final Color base = fill ?? const Color(0x14FFFFFF);
+    final Color base = fill ?? AppColors.glassFill;
 
-    // Body: brighter sheen on top → flat base fill toward the bottom.
     Widget body = DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0.0, 0.55, 1.0],
-          colors: [
-            Color.alphaBlend(const Color(0x24FFFFFF), base),
-            base,
-            base,
-          ],
-        ),
-      ),
+      decoration: BoxDecoration(borderRadius: borderRadius, color: base),
       child: padding == null ? child : Padding(padding: padding!, child: child),
     );
 
@@ -84,15 +49,13 @@ class GlassContainer extends StatelessWidget {
       child: Stack(
         children: [
           body,
-          // Specular rim + top-lip highlight, painted above the body but
-          // never intercepting taps.
           Positioned.fill(
             child: IgnorePointer(
               child: CustomPaint(
-                painter: _GlassRimPainter(
+                painter: _GlassEdgePainter(
                   borderRadius: borderRadius,
                   width: borderWidth,
-                  color: borderColor ?? const Color(0xFFFFFFFF),
+                  tint: borderColor,
                 ),
               ),
             ),
@@ -101,74 +64,87 @@ class GlassContainer extends StatelessWidget {
       ),
     );
 
+    final List<BoxShadow>? shadows = boxShadow;
+    if (shadows == null || shadows.isEmpty) return surface;
     return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        boxShadow: [_depth, ...?boxShadow],
-      ),
+      decoration: BoxDecoration(borderRadius: borderRadius, boxShadow: shadows),
       child: surface,
     );
   }
 }
 
-/// Paints the glass edge: a diagonal specular rim plus a soft top-lip glow.
-class _GlassRimPainter extends CustomPainter {
-  const _GlassRimPainter({
+class _GlassEdgePainter extends CustomPainter {
+  const _GlassEdgePainter({
     required this.borderRadius,
     required this.width,
-    required this.color,
+    this.tint,
   });
 
   final BorderRadius borderRadius;
   final double width;
-  final Color color;
+  final Color? tint;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (width <= 0) return;
     final Rect rect = Offset.zero & size;
+    final RRect shape = borderRadius.toRRect(rect);
 
-    // Specular hairline: bright top-left → faint middle → soft bottom-right.
-    final RRect rim = borderRadius.toRRect(rect).deflate(width / 2);
+    _innerShadow(canvas, shape, const Offset(0, -0.59), 2.4, const Color(0x0FFFFFFF));
+    _innerShadow(canvas, shape, const Offset(-1.19, -1.19), 2.4, const Color(0x2EFFFFFF));
+    _innerShadow(canvas, shape, const Offset(1.78, 1.78), 3.0, const Color(0x80000000));
+
+    if (width <= 0) return;
+    final RRect rim = shape.deflate(width / 2);
+    final Gradient gradient = tint == null
+        ? const LinearGradient(
+            begin: Alignment(-0.48, -1.14),
+            end: Alignment(0.90, 1.08),
+            stops: [0.0, 0.34, 0.68, 1.0],
+            colors: [
+              Color(0x59CFD8E5),
+              Color(0x00454B5E),
+              Color(0x33A9B9ED),
+              Color(0x808290B9),
+            ],
+          )
+        : LinearGradient(
+            begin: const Alignment(-0.48, -1.14),
+            end: const Alignment(0.90, 1.08),
+            colors: [
+              tint!.withValues(alpha: 0.55),
+              tint!.withValues(alpha: 0.05),
+              tint!.withValues(alpha: 0.40),
+            ],
+          );
     canvas.drawRRect(
       rim,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = width
-        ..shader = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0.0, 0.5, 1.0],
-          colors: [
-            color.withValues(alpha: 0.55),
-            color.withValues(alpha: 0.05),
-            color.withValues(alpha: 0.26),
-          ],
-        ).createShader(rect),
+        ..shader = gradient.createShader(rect),
     );
+  }
 
-    // Wet highlight along the very top lip (fades out by the vertical centre).
-    final RRect lip = borderRadius.toRRect(rect).deflate(width * 1.5);
-    canvas.drawRRect(
-      lip,
+  void _innerShadow(
+    Canvas canvas,
+    RRect shape,
+    Offset offset,
+    double sigma,
+    Color color,
+  ) {
+    final Path shapePath = Path()..addRRect(shape);
+    final Path shifted = Path()..addRRect(shape.shift(offset));
+    canvas.drawPath(
+      Path.combine(PathOperation.difference, shapePath, shifted),
       Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = width * 1.2
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2)
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.center,
-          colors: [
-            color.withValues(alpha: 0.45),
-            color.withValues(alpha: 0.0),
-          ],
-        ).createShader(rect),
+        ..color = color
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, sigma),
     );
   }
 
   @override
-  bool shouldRepaint(_GlassRimPainter old) =>
+  bool shouldRepaint(_GlassEdgePainter old) =>
       old.borderRadius != borderRadius ||
       old.width != width ||
-      old.color != color;
+      old.tint != tint;
 }

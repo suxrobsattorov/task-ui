@@ -12,7 +12,6 @@ import '../widgets/chat_input_bar.dart';
 import '../widgets/license_plate.dart';
 import '../widgets/voice_message_bubble.dart';
 
-/// "Переписка" — chat with the owner of the scanned car.
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key, this.firstMessage});
 

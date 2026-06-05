@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_radius.dart';
 import 'glass_container.dart';
 
-/// Circular frosted-glass button (header back arrow, QR action buttons).
 class GlassCircleButton extends StatelessWidget {
   const GlassCircleButton({
     super.key,
