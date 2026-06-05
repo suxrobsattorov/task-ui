@@ -43,6 +43,7 @@ class _ChatBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GlassContainer(
       borderRadius: AppRadius.full100,
+      blurSigma: 16,
       child: SizedBox(
         width: 24,
         height: 24,

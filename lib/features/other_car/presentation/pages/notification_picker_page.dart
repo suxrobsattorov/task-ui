@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_background.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_header.dart';
 import '../../../../core/widgets/gap.dart';
-import '../../../../core/widgets/glass_button.dart';
 
 class NotificationPickerPage extends StatefulWidget {
   const NotificationPickerPage({super.key, this.onSend});
@@ -74,17 +72,13 @@ class _NotificationPickerPageState extends State<NotificationPickerPage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.gutter,
                 ),
-                child: GlassButton(
+                child: AppButton(
                   label: AppStrings.send,
-                  borderRadius: AppRadius.br30,
-                  fill: AppColors.bubbleFill,
-                  textColor: AppColors.accent,
-                  glow: AppShadows.accentGlow,
                   onTap: () =>
                       widget.onSend?.call(AppStrings.notifications[_selected]),
                 ),
               ),
-              const Gap(AppSpacing.s12),
+              const Gap(AppSpacing.s24),
             ],
           ),
         ),

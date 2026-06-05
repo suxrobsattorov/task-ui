@@ -12,8 +12,12 @@ class GlassButton extends StatelessWidget {
     required this.onTap,
     this.height = 56,
     this.borderRadius = AppRadius.full100,
-    this.fill = const Color(0x0AFFFFFF),
+    this.fill,
     this.borderColor,
+    this.borderGradient,
+    this.borderWidth = 1,
+    this.blurSigma = 24,
+    this.innerShadows,
     this.textColor = AppColors.accent,
     this.glow,
   });
@@ -22,8 +26,12 @@ class GlassButton extends StatelessWidget {
   final VoidCallback? onTap;
   final double height;
   final BorderRadius borderRadius;
-  final Color fill;
+  final Color? fill;
   final Color? borderColor;
+  final Gradient? borderGradient;
+  final double borderWidth;
+  final double blurSigma;
+  final List<BoxShadow>? innerShadows;
   final Color textColor;
   final List<BoxShadow>? glow;
 
@@ -36,6 +44,10 @@ class GlassButton extends StatelessWidget {
         borderRadius: borderRadius,
         fill: fill,
         borderColor: borderColor,
+        borderGradient: borderGradient,
+        borderWidth: borderWidth,
+        blurSigma: blurSigma,
+        innerShadows: innerShadows,
         boxShadow: glow,
         child: SizedBox(
           height: height,

@@ -10,8 +10,10 @@ class GlassContainer extends StatelessWidget {
     required this.borderRadius,
     this.fill,
     this.borderColor,
+    this.borderGradient,
     this.borderWidth = 1,
-    this.blurSigma = 18,
+    this.blurSigma = 24,
+    this.innerShadows,
     this.boxShadow,
     this.padding,
     this.child,
@@ -21,12 +23,20 @@ class GlassContainer extends StatelessWidget {
   final Color? fill;
 
   final Color? borderColor;
+  final Gradient? borderGradient;
   final double borderWidth;
   final double blurSigma;
 
+  final List<BoxShadow>? innerShadows;
   final List<BoxShadow>? boxShadow;
   final EdgeInsetsGeometry? padding;
   final Widget? child;
+
+  static const List<BoxShadow> _bevel = [
+    BoxShadow(color: Color(0x0FFFFFFF), offset: Offset(0, -0.59), blurRadius: 2.4),
+    BoxShadow(color: Color(0x2EFFFFFF), offset: Offset(-1.19, -1.19), blurRadius: 2.4),
+    BoxShadow(color: Color(0x80000000), offset: Offset(1.78, 1.78), blurRadius: 3.0),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +65,9 @@ class GlassContainer extends StatelessWidget {
                 painter: _GlassEdgePainter(
                   borderRadius: borderRadius,
                   width: borderWidth,
-                  tint: borderColor,
+                  borderColor: borderColor,
+                  borderGradient: borderGradient,
+                  innerShadows: innerShadows ?? _bevel,
                 ),
               ),
             ),
@@ -77,52 +89,51 @@ class _GlassEdgePainter extends CustomPainter {
   const _GlassEdgePainter({
     required this.borderRadius,
     required this.width,
-    this.tint,
+    required this.innerShadows,
+    this.borderColor,
+    this.borderGradient,
   });
 
   final BorderRadius borderRadius;
   final double width;
-  final Color? tint;
+  final List<BoxShadow> innerShadows;
+  final Color? borderColor;
+  final Gradient? borderGradient;
+
+  static const LinearGradient _rim = LinearGradient(
+    begin: Alignment(-0.48, -1.14),
+    end: Alignment(0.90, 1.08),
+    stops: [0.0, 0.34, 0.68, 1.0],
+    colors: [
+      Color(0x59CFD8E5),
+      Color(0x00454B5E),
+      Color(0x33A9B9ED),
+      Color(0x808290B9),
+    ],
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
     final Rect rect = Offset.zero & size;
     final RRect shape = borderRadius.toRRect(rect);
 
-    _innerShadow(canvas, shape, const Offset(0, -0.59), 2.4, const Color(0x0FFFFFFF));
-    _innerShadow(canvas, shape, const Offset(-1.19, -1.19), 2.4, const Color(0x2EFFFFFF));
-    _innerShadow(canvas, shape, const Offset(1.78, 1.78), 3.0, const Color(0x80000000));
+    for (final BoxShadow s in innerShadows) {
+      _innerShadow(canvas, shape, s.offset, s.blurRadius, s.color);
+    }
 
     if (width <= 0) return;
     final RRect rim = shape.deflate(width / 2);
-    final Gradient gradient = tint == null
-        ? const LinearGradient(
-            begin: Alignment(-0.48, -1.14),
-            end: Alignment(0.90, 1.08),
-            stops: [0.0, 0.34, 0.68, 1.0],
-            colors: [
-              Color(0x59CFD8E5),
-              Color(0x00454B5E),
-              Color(0x33A9B9ED),
-              Color(0x808290B9),
-            ],
-          )
-        : LinearGradient(
-            begin: const Alignment(-0.48, -1.14),
-            end: const Alignment(0.90, 1.08),
-            colors: [
-              tint!.withValues(alpha: 0.55),
-              tint!.withValues(alpha: 0.05),
-              tint!.withValues(alpha: 0.40),
-            ],
-          );
-    canvas.drawRRect(
-      rim,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = width
-        ..shader = gradient.createShader(rect),
-    );
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width;
+    if (borderGradient != null) {
+      paint.shader = borderGradient!.createShader(rect);
+    } else if (borderColor != null) {
+      paint.color = borderColor!;
+    } else {
+      paint.shader = _rim.createShader(rect);
+    }
+    canvas.drawRRect(rim, paint);
   }
 
   void _innerShadow(
@@ -146,5 +157,7 @@ class _GlassEdgePainter extends CustomPainter {
   bool shouldRepaint(_GlassEdgePainter old) =>
       old.borderRadius != borderRadius ||
       old.width != width ||
-      old.tint != tint;
+      old.borderColor != borderColor ||
+      old.borderGradient != borderGradient ||
+      old.innerShadows != innerShadows;
 }

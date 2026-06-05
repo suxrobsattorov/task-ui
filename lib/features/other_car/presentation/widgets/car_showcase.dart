@@ -29,29 +29,31 @@ class CarShowcase extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        SizedBox(
-          height: 137,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                width: 210,
-                height: 22,
-                margin: const EdgeInsets.only(bottom: 6),
-                decoration: const BoxDecoration(
-                  borderRadius: AppRadius.full100,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x7300D1FF),
-                      blurRadius: 80,
-                      spreadRadius: 4,
-                    ),
-                  ],
-                ),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              width: 210,
+              height: 22,
+              margin: const EdgeInsets.only(bottom: 6),
+              decoration: const BoxDecoration(
+                borderRadius: AppRadius.full100,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x7300D1FF),
+                    blurRadius: 80,
+                    spreadRadius: 4,
+                  ),
+                ],
               ),
-              const AppImage(AppAssets.carOnix, width: 259, height: 137),
-            ],
-          ),
+            ),
+            const AppImage(
+              AppAssets.carOnix,
+              width: 300,
+              height: 160,
+              fit: BoxFit.cover,
+            ),
+          ],
         ),
       ],
     );
