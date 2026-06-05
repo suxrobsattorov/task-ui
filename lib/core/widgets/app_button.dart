@@ -17,6 +17,10 @@ class AppButton extends StatelessWidget {
     colors: [Color(0xFF00D1FF), Color(0x8C231013)],
   );
 
+  static const List<BoxShadow> _inner = [
+    BoxShadow(color: Color(0x26000000), offset: Offset(3, 3), blurRadius: 3),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return GlassButton(
@@ -26,8 +30,8 @@ class AppButton extends StatelessWidget {
       fill: AppColors.bubbleFill,
       borderGradient: _border,
       borderWidth: 3,
-      blurSigma: 60,
-      innerShadows: const [],
+      blurSigma: 30,
+      innerShadows: _inner,
       textColor: AppColors.accent,
       glow: AppShadows.accentGlow,
     );

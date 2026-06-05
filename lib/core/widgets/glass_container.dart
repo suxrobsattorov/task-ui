@@ -78,11 +78,51 @@ class GlassContainer extends StatelessWidget {
 
     final List<BoxShadow>? shadows = boxShadow;
     if (shadows == null || shadows.isEmpty) return surface;
-    return DecoratedBox(
-      decoration: BoxDecoration(borderRadius: borderRadius, boxShadow: shadows),
-      child: surface,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(
+          child: IgnorePointer(
+            child: CustomPaint(
+              painter: _GlowPainter(borderRadius: borderRadius, shadows: shadows),
+            ),
+          ),
+        ),
+        surface,
+      ],
     );
   }
+}
+
+class _GlowPainter extends CustomPainter {
+  const _GlowPainter({required this.borderRadius, required this.shadows});
+
+  final BorderRadius borderRadius;
+  final List<BoxShadow> shadows;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Rect rect = Offset.zero & size;
+    final RRect footprint = borderRadius.toRRect(rect);
+    for (final BoxShadow s in shadows) {
+      final double sigma = s.blurRadius <= 0 ? 0 : s.blurRadius * 0.57735 + 0.5;
+      canvas.saveLayer(rect.inflate(s.blurRadius * 4 + s.spreadRadius.abs() + 16), Paint());
+      final RRect glow = borderRadius.toRRect(
+        rect.inflate(s.spreadRadius).shift(s.offset),
+      );
+      final Paint glowPaint = Paint()..color = s.color;
+      if (sigma > 0) {
+        glowPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, sigma);
+      }
+      canvas.drawRRect(glow, glowPaint);
+      canvas.drawRRect(footprint, Paint()..blendMode = BlendMode.clear);
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(_GlowPainter old) =>
+      old.shadows != shadows || old.borderRadius != borderRadius;
 }
 
 class _GlassEdgePainter extends CustomPainter {
