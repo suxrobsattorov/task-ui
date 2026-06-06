@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -19,8 +20,6 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A bubble takes at most two-thirds of the screen width, and is sized to
-    // hug the text so right-aligned lines leave no empty space inside it.
     final maxWidth = MediaQuery.sizeOf(context).width * 2 / 3;
     final style = DefaultTextStyle.of(
       context,
@@ -28,13 +27,13 @@ class ChatBubble extends StatelessWidget {
     final textWidth = _longestLineWidth(
       style,
       MediaQuery.textScalerOf(context),
-      maxWidth - _padding * 2,
+      maxWidth - _padding.r * 2,
     );
 
     final bubble = GlassContainer(
       borderRadius: _isMe ? AppRadius.br16 : AppRadius.received,
       fill: _isMe ? AppColors.bubbleFill : const Color(0x14FFFFFF),
-      padding: const EdgeInsets.all(_padding),
+      padding: EdgeInsets.all(_padding.r),
       child: SizedBox(
         width: textWidth,
         child: Text(
@@ -52,7 +51,11 @@ class ChatBubble extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: [bubble, const SizedBox(height: 8), time],
+          children: [
+            bubble,
+            SizedBox(height: 8.h),
+            time,
+          ],
         ),
       );
     }
@@ -61,14 +64,17 @@ class ChatBubble extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _Avatar(),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Flexible(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               bubble,
-              const SizedBox(height: 8),
-              Padding(padding: const EdgeInsets.only(left: 4), child: time),
+              SizedBox(height: 8.h),
+              Padding(
+                padding: EdgeInsets.only(left: 4.w),
+                child: time,
+              ),
             ],
           ),
         ),
@@ -76,9 +82,11 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  /// Width of the widest line after wrapping at [maxWidth], so the bubble can
-  /// shrink-wrap the text instead of stretching to the full max width.
-  double _longestLineWidth(TextStyle style, TextScaler scaler, double maxWidth) {
+  double _longestLineWidth(
+    TextStyle style,
+    TextScaler scaler,
+    double maxWidth,
+  ) {
     final painter = TextPainter(
       text: TextSpan(text: message.text, style: style),
       textDirection: TextDirection.ltr,
@@ -98,12 +106,14 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GlassContainer(
+    return GlassContainer(
       borderRadius: AppRadius.full100,
       child: SizedBox(
-        width: 44,
-        height: 44,
-        child: Center(child: AppImage(AppAssets.icUser, width: 24, height: 24)),
+        width: 44.r,
+        height: 44.r,
+        child: Center(
+          child: AppImage(AppAssets.icUser, width: 24.r, height: 24.r),
+        ),
       ),
     );
   }

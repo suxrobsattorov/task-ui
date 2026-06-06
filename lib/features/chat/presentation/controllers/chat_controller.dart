@@ -21,7 +21,6 @@ class ChatController extends ChangeNotifier {
         ),
       );
     }
-    // The only pre-existing message in the chat: a single reply from the owner.
     _messages.add(
       TextMessage(
         id: _nextId(),
@@ -68,7 +67,6 @@ class ChatController extends ChangeNotifier {
 
   bool isPlaying(String id) => _playingId == id;
 
-  /// Playback progress (0..1) of the currently playing voice message.
   double playProgress(String id) {
     if (_playingId != id || _playDuration.inMilliseconds == 0) return 0;
     return (_playPosition.inMilliseconds / _playDuration.inMilliseconds).clamp(
@@ -77,7 +75,6 @@ class ChatController extends ChangeNotifier {
     );
   }
 
-  /// Elapsed position while playing, otherwise the full recorded duration.
   String playLabel(VoiceMessage m) =>
       _playingId == m.id ? _fmt(_playPosition) : m.duration;
 

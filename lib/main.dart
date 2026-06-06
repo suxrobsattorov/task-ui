@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
@@ -15,12 +16,16 @@ class TaskUiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Task UI',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      initialRoute: Routes.qr,
-      onGenerateRoute: AppRouter.onGenerateRoute,
+    return ScreenUtilInit(
+      designSize: const Size(393, 852),
+      minTextAdapt: true,
+      builder: (context, child) => MaterialApp(
+        title: 'Task UI',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.dark,
+        initialRoute: Routes.qr,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+      ),
     );
   }
 }

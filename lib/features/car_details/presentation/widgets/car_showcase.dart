@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -16,8 +17,8 @@ class CarShowcase extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AppImage(AppAssets.logoChevrolet, width: 48, height: 48),
-            const SizedBox(width: 12),
+            AppImage(AppAssets.logoChevrolet, width: 48.r, height: 48.r),
+            SizedBox(width: 12.w),
             Text(
               AppStrings.carName,
               style: AppTextStyles.title18.copyWith(
@@ -28,17 +29,17 @@ class CarShowcase extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
         Stack(
           alignment: Alignment.bottomCenter,
           children: [
             Container(
-              width: 210,
-              height: 22,
-              margin: const EdgeInsets.only(bottom: 6),
-              decoration: const BoxDecoration(
+              width: 210.w,
+              height: 22.h,
+              margin: EdgeInsets.only(bottom: 6.h),
+              decoration: BoxDecoration(
                 borderRadius: AppRadius.full100,
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Color(0x7300D1FF),
                     blurRadius: 80,
@@ -47,10 +48,10 @@ class CarShowcase extends StatelessWidget {
                 ],
               ),
             ),
-            const AppImage(
+            AppImage(
               AppAssets.carOnix,
-              width: 300,
-              height: 160,
+              width: 300.w,
+              height: 160.h,
               fit: BoxFit.cover,
             ),
           ],

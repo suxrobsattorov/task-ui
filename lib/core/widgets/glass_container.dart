@@ -33,9 +33,21 @@ class GlassContainer extends StatelessWidget {
   final Widget? child;
 
   static const List<BoxShadow> _bevel = [
-    BoxShadow(color: Color(0x0FFFFFFF), offset: Offset(0, -0.59), blurRadius: 2.4),
-    BoxShadow(color: Color(0x2EFFFFFF), offset: Offset(-1.19, -1.19), blurRadius: 2.4),
-    BoxShadow(color: Color(0x80000000), offset: Offset(1.78, 1.78), blurRadius: 3.0),
+    BoxShadow(
+      color: Color(0x0FFFFFFF),
+      offset: Offset(0, -0.59),
+      blurRadius: 2.4,
+    ),
+    BoxShadow(
+      color: Color(0x2EFFFFFF),
+      offset: Offset(-1.19, -1.19),
+      blurRadius: 2.4,
+    ),
+    BoxShadow(
+      color: Color(0x80000000),
+      offset: Offset(1.78, 1.78),
+      blurRadius: 3.0,
+    ),
   ];
 
   @override
@@ -84,7 +96,10 @@ class GlassContainer extends StatelessWidget {
         Positioned.fill(
           child: IgnorePointer(
             child: CustomPaint(
-              painter: _GlowPainter(borderRadius: borderRadius, shadows: shadows),
+              painter: _GlowPainter(
+                borderRadius: borderRadius,
+                shadows: shadows,
+              ),
             ),
           ),
         ),
@@ -106,7 +121,10 @@ class _GlowPainter extends CustomPainter {
     final RRect footprint = borderRadius.toRRect(rect);
     for (final BoxShadow s in shadows) {
       final double sigma = s.blurRadius <= 0 ? 0 : s.blurRadius * 0.57735 + 0.5;
-      canvas.saveLayer(rect.inflate(s.blurRadius * 4 + s.spreadRadius.abs() + 16), Paint());
+      canvas.saveLayer(
+        rect.inflate(s.blurRadius * 4 + s.spreadRadius.abs() + 16),
+        Paint(),
+      );
       final RRect glow = borderRadius.toRRect(
         rect.inflate(s.spreadRadius).shift(s.offset),
       );

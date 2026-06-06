@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -30,11 +31,11 @@ class QrScanPage extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned.fill(
+          Positioned.fill(
             child: CustomPaint(
               painter: _ScrimCutoutPainter(
-                cutoutSize: _frameSize,
-                radius: 15,
+                cutoutSize: _frameSize.r,
+                radius: 15.r,
                 color: AppColors.scrim,
               ),
             ),
@@ -45,17 +46,17 @@ class QrScanPage extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const AppImage(
+                  AppImage(
                     AppAssets.qrFrame,
-                    width: _frameSize,
-                    height: _frameSize,
+                    width: _frameSize.r,
+                    height: _frameSize.r,
                   ),
                   GestureDetector(
                     onTap: onScanned,
-                    child: const AppImage(
+                    child: AppImage(
                       AppAssets.qrSticker,
-                      width: 214,
-                      height: 268,
+                      width: 214.w,
+                      height: 268.h,
                     ),
                   ),
                 ],
@@ -63,32 +64,32 @@ class QrScanPage extends StatelessWidget {
             ),
           ),
 
-          const Positioned(
-            top: 60,
+          Positioned(
+            top: 60.h,
             left: 0,
             right: 0,
-            child: AppHeader(title: AppStrings.qrTitle),
+            child: const AppHeader(title: AppStrings.qrTitle),
           ),
 
           Positioned(
-            left: 20,
-            bottom: 35,
+            left: 20.w,
+            bottom: 35.h,
             child: GlassCircleButton(
-              size: 60,
+              size: 60.r,
               onTap: () {},
-              child: const AppImage(AppAssets.icFlash, width: 30, height: 30),
+              child: AppImage(AppAssets.icFlash, width: 30.r, height: 30.r),
             ),
           ),
           Positioned(
-            right: 20,
-            bottom: 35,
+            right: 20.w,
+            bottom: 35.h,
             child: GlassCircleButton(
-              size: 60,
+              size: 60.r,
               onTap: () {},
-              child: const AppImage(
+              child: AppImage(
                 AppAssets.icCameraFlip,
-                width: 30,
-                height: 30,
+                width: 30.r,
+                height: 30.r,
               ),
             ),
           ),
@@ -127,5 +128,7 @@ class _ScrimCutoutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ScrimCutoutPainter old) =>
-      old.cutoutSize != cutoutSize || old.radius != radius || old.color != color;
+      old.cutoutSize != cutoutSize ||
+      old.radius != radius ||
+      old.color != color;
 }

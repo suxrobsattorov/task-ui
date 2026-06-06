@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -36,9 +37,6 @@ class _ChatInputBarState extends State<ChatInputBar>
   final TextEditingController _controller = TextEditingController();
   bool _hasText = false;
 
-  // Drives the press-to-record morph: 0 = idle mic (40px), 1 = recording
-  // mic (80px glowing). Grows with a slight overshoot on press and eases
-  // back on release, like the Figma prototype.
   late final AnimationController _recordCtrl = AnimationController(
     vsync: this,
     duration: AppDurations.normal,
@@ -87,12 +85,9 @@ class _ChatInputBarState extends State<ChatInputBar>
         color: AppColors.bg,
         border: Border(top: BorderSide(color: AppColors.divider, width: 0.5)),
       ),
-      padding: const EdgeInsets.only(top: 12, bottom: 8),
+      padding: EdgeInsets.only(top: 12.h, bottom: 8.h),
       child: SafeArea(
         top: false,
-        // The whole bar rebuilds each frame of the record morph. The mic's
-        // Listener stays mounted throughout, so a press that started the
-        // recording still receives its release while the button is grown.
         child: AnimatedBuilder(
           animation: _t,
           builder: (context, _) {
@@ -111,19 +106,15 @@ class _ChatInputBarState extends State<ChatInputBar>
     );
   }
 
-  // Left side of the bar: the text field cross-fades into the recording pill
-  // (dot + timer) as recording ramps up.
   Widget _leftPill(double t) {
     final ct = t.clamp(0.0, 1.0);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Stack(
         children: [
-          // Full-width recording pill, fades in. Also sets the row's size.
           Opacity(opacity: ct, child: _recordingPill()),
-          // Text field, fades out; leaves 52px on the right for the mic.
           Positioned.fill(
-            right: 52,
+            right: 52.w,
             child: Opacity(
               opacity: 1 - ct,
               child: IgnorePointer(
@@ -137,13 +128,11 @@ class _ChatInputBarState extends State<ChatInputBar>
     );
   }
 
-  /// Press and hold to record, release to send (Telegram-style). The same
-  /// button grows into the big glowing recording mic via [_micMorph].
   Widget _micButton(double t) {
     return Positioned(
       top: 0,
       bottom: 0,
-      right: 20,
+      right: 20.w,
       child: Center(
         child: Listener(
           behavior: HitTestBehavior.opaque,
@@ -159,16 +148,11 @@ class _ChatInputBarState extends State<ChatInputBar>
     );
   }
 
-  // A single 40px mic that morphs into the 80px recording mic as [t] 0->1:
-  // the circle scales about its center (idle and recording mics share the
-  // same center, so no repositioning), darkens into accent with a glow, and
-  // the icon grows 24->32 and turns white. The icon is overlaid rather than
-  // scaled with the circle so it tracks the Figma 24->32 step, not 24->48.
   Widget _micMorph(double t) {
     final ct = t.clamp(0.0, 1.0);
     return SizedBox(
-      width: 40,
-      height: 40,
+      width: 40.r,
+      height: 40.r,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
@@ -176,8 +160,8 @@ class _ChatInputBarState extends State<ChatInputBar>
           Transform.scale(
             scale: 1 + t,
             child: Container(
-              width: 40,
-              height: 40,
+              width: 40.r,
+              height: 40.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -188,8 +172,6 @@ class _ChatInputBarState extends State<ChatInputBar>
                     Color.lerp(const Color(0xFF1A1E26), AppColors.accent, ct)!,
                   ],
                 ),
-                // Glow fades in; blur/spread are halved because Transform.scale
-                // doubles them at full size (-> 60 blur, 10px ring, as Figma).
                 boxShadow: t <= 0
                     ? null
                     : [
@@ -207,9 +189,9 @@ class _ChatInputBarState extends State<ChatInputBar>
           ),
           AppImage(
             AppAssets.icMic,
-            width: 24 + 8 * ct,
-            height: 24 + 8 * ct,
-            color: Color.lerp(AppColors.textMuted, AppColors.white, ct),
+            width: (24 + 8 * ct).r,
+            height: (24 + 8 * ct).r,
+            color: Color.lerp(AppColors.white, AppColors.bg, ct),
           ),
         ],
       ),
@@ -220,13 +202,13 @@ class _ChatInputBarState extends State<ChatInputBar>
     return Positioned(
       top: 0,
       bottom: 0,
-      right: 20,
+      right: 20.w,
       child: Center(
         child: _CircleButton(
           color: AppColors.accent,
           glow: AppShadows.accentGlow,
           onTap: _send,
-          child: const AppImage(AppAssets.icSend, width: 24, height: 24),
+          child: AppImage(AppAssets.icSend, width: 24.r, height: 24.r),
         ),
       ),
     );
@@ -234,11 +216,11 @@ class _ChatInputBarState extends State<ChatInputBar>
 
   Widget _recordingPill() {
     return Container(
-      height: 40,
+      height: 40.h,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        gradient: LinearGradient(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20.r)),
+        gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [Color(0xFF1E2430), Color(0xFF1A1E26)],
@@ -247,22 +229,22 @@ class _ChatInputBarState extends State<ChatInputBar>
       padding: const EdgeInsets.all(1),
       child: Container(
         alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(19)),
+        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(19.r)),
           color: AppColors.bg,
         ),
         child: Row(
           children: [
             Container(
-              width: 12,
-              height: 12,
+              width: 12.r,
+              height: 12.r,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.accent,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Text(
               widget.recordingLabel,
               style: AppTextStyles.body16.copyWith(color: AppColors.white),
@@ -275,8 +257,8 @@ class _ChatInputBarState extends State<ChatInputBar>
 
   Widget _pill({required Widget child}) {
     return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 40.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: AppColors.bg,
         borderRadius: AppRadius.br19,
@@ -294,7 +276,7 @@ class _ChatInputBarState extends State<ChatInputBar>
       cursorColor: AppColors.accent,
       textInputAction: TextInputAction.send,
       onSubmitted: (_) => _send(),
-      decoration: const InputDecoration.collapsed(
+      decoration: InputDecoration.collapsed(
         hintText: AppStrings.messageHint,
         hintStyle: AppTextStyles.placeholder,
       ),
@@ -321,8 +303,8 @@ class _CircleButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 40.r,
+        height: 40.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: color,

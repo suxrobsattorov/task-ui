@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/app_assets.dart';
 import 'app_image.dart';
@@ -10,10 +11,11 @@ class LicensePlate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double w = width.w;
     return AppImage(
       AppAssets.plate,
-      width: width,
-      height: width * 50 / 197,
+      width: w,
+      height: w * 50 / 197,
       fit: BoxFit.contain,
     );
   }

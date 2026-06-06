@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -22,10 +23,10 @@ class SocialLinks extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (final (i, asset) in _icons.indexed) ...[
-          if (i > 0) const SizedBox(width: AppSpacing.s24),
+          if (i > 0) SizedBox(width: AppSpacing.s24.w),
           GestureDetector(
             onTap: onTap == null ? null : () => onTap!(asset),
-            child: AppImage(asset, width: 36, height: 36),
+            child: AppImage(asset, width: 36.r, height: 36.r),
           ),
         ],
       ],

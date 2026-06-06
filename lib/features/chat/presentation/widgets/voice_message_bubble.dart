@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -34,20 +35,20 @@ class VoiceMessageBubble extends StatelessWidget {
           GlassContainer(
             borderRadius: AppRadius.br16,
             fill: AppColors.bubbleFill,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: SizedBox(
-              height: 80,
+              height: 80.h,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _PlayPause(playing: playing, onTap: onPlayToggle),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _Waveform(progress: progress),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(label, style: AppTextStyles.message),
                     ],
                   ),
@@ -55,7 +56,7 @@ class VoiceMessageBubble extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(message.time, style: AppTextStyles.timestamp),
         ],
       ),
@@ -63,7 +64,6 @@ class VoiceMessageBubble extends StatelessWidget {
   }
 }
 
-/// Static waveform that fills with the accent colour as playback progresses.
 class _Waveform extends StatelessWidget {
   const _Waveform({required this.progress});
 
@@ -74,21 +74,21 @@ class _Waveform extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const base = AppImage(AppAssets.wave, width: _w, height: _h);
+    final base = AppImage(AppAssets.wave, width: _w.w, height: _h.h);
     if (progress <= 0) return base;
 
     return SizedBox(
-      width: _w,
-      height: _h,
+      width: _w.w,
+      height: _h.h,
       child: Stack(
         children: [
-          const Opacity(opacity: 0.35, child: base),
+          Opacity(opacity: 0.35, child: base),
           ClipRect(
             clipper: _ProgressClipper(progress),
-            child: const AppImage(
+            child: AppImage(
               AppAssets.wave,
-              width: _w,
-              height: _h,
+              width: _w.w,
+              height: _h.h,
               color: AppColors.accent,
             ),
           ),
@@ -127,8 +127,8 @@ class _PlayPause extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: playing
           ? Container(
-              width: size,
-              height: size,
+              width: size.r,
+              height: size.r,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.accent,
@@ -138,22 +138,22 @@ class _PlayPause extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _bar(),
-                    SizedBox(width: size * 0.12),
+                    SizedBox(width: (size * 0.12).r),
                     _bar(),
                   ],
                 ),
               ),
             )
-          : AppImage(AppAssets.icPlay, width: size, height: size),
+          : AppImage(AppAssets.icPlay, width: size.r, height: size.r),
     );
   }
 
   Widget _bar() => Container(
-    width: size * 0.1,
-    height: size * 0.34,
+    width: (size * 0.1).r,
+    height: (size * 0.34).r,
     decoration: BoxDecoration(
       color: AppColors.white,
-      borderRadius: BorderRadius.circular(2),
+      borderRadius: BorderRadius.circular(2.r),
     ),
   );
 }

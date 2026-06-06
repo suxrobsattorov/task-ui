@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_radius.dart';
@@ -11,7 +12,7 @@ class GlassButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.height = 56,
-    this.borderRadius = AppRadius.full100,
+    this.borderRadius,
     this.fill,
     this.borderColor,
     this.borderGradient,
@@ -25,7 +26,7 @@ class GlassButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final double height;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
   final Color? fill;
   final Color? borderColor;
   final Gradient? borderGradient;
@@ -41,7 +42,7 @@ class GlassButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: GlassContainer(
-        borderRadius: borderRadius,
+        borderRadius: borderRadius ?? AppRadius.full100,
         fill: fill,
         borderColor: borderColor,
         borderGradient: borderGradient,
@@ -50,7 +51,7 @@ class GlassButton extends StatelessWidget {
         innerShadows: innerShadows,
         boxShadow: glow,
         child: SizedBox(
-          height: height,
+          height: height.h,
           child: Center(
             child: Text(
               label,

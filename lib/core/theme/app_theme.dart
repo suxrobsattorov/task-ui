@@ -29,6 +29,6 @@ abstract final class AppTheme {
       cursorColor: AppColors.accent,
       selectionHandleColor: AppColors.accent,
     ),
-    textTheme: const TextTheme(bodyMedium: AppTextStyles.body16),
+    textTheme: TextTheme(bodyMedium: AppTextStyles.body16),
   );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -33,13 +34,13 @@ class CarDetailsPage extends StatelessWidget {
                 const AppHeader(title: AppStrings.detailsTitle),
                 const Gap(AppSpacing.s16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.gutter,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.gutter.w,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
+                      Text(
                         AppStrings.contactOwner,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.title18,
@@ -51,7 +52,7 @@ class CarDetailsPage extends StatelessWidget {
                       const Gap(AppSpacing.s24),
                       const OwnerNote(),
                       const Gap(AppSpacing.s24),
-                      const Text(
+                      Text(
                         AppStrings.ownerSocials,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.title16,
@@ -69,7 +70,7 @@ class CarDetailsPage extends StatelessWidget {
                               onTap: () {},
                             ),
                           ),
-                          const SizedBox(width: 9),
+                          SizedBox(width: 9.w),
                           Expanded(
                             child: GlassButton(
                               label: AppStrings.call2,

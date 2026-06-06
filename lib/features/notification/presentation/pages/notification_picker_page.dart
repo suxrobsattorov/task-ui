@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -41,16 +42,14 @@ class _NotificationPickerPageState extends State<NotificationPickerPage> {
             children: [
               const AppHeader(title: AppStrings.detailsTitle),
               const Gap(AppSpacing.s16),
-              const Text(
+              Text(
                 AppStrings.chooseNotification,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.title18,
               ),
               const Gap(_titleToBand),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.gutter,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.gutter.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -69,9 +68,7 @@ class _NotificationPickerPageState extends State<NotificationPickerPage> {
               ),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.gutter,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.gutter.w),
                 child: AppButton(
                   label: AppStrings.send,
                   onTap: () =>
@@ -95,7 +92,7 @@ class _SelectionBand extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 72,
+      height: 72.h,
       child: Column(
         children: [
           const _Divider(),

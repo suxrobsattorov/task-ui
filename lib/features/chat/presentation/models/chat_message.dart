@@ -34,6 +34,5 @@ class VoiceMessage extends ChatMessage {
 
   final String duration;
 
-  /// Local file path of the recorded audio.
   final String path;
 }

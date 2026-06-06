@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/app_assets.dart';
 import '../theme/app_colors.dart';
@@ -25,10 +26,10 @@ class AppBackground extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            left: -31,
-            top: 128,
-            width: 421,
-            height: 724,
+            left: -31.w,
+            top: 128.h,
+            width: 421.w,
+            height: 724.h,
             child: Opacity(
               opacity: opacity,
               child: const AppImage(AppAssets.bgCircuit, fit: BoxFit.cover),
@@ -36,8 +37,8 @@ class AppBackground extends StatelessWidget {
           ),
           if (glow)
             Positioned(
-              left: 69,
-              top: 293,
+              left: 69.w,
+              top: 293.h,
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(
                   sigmaX: 50,
@@ -45,10 +46,10 @@ class AppBackground extends StatelessWidget {
                   tileMode: TileMode.decal,
                 ),
                 child: ClipOval(
-                  child: const SizedBox(
-                    width: 255,
-                    height: 65,
-                    child: ColoredBox(color: AppColors.accent),
+                  child: SizedBox(
+                    width: 255.w,
+                    height: 65.h,
+                    child: const ColoredBox(color: AppColors.accent),
                   ),
                 ),
               ),
