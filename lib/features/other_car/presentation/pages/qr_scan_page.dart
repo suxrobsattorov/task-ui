@@ -19,8 +19,16 @@ class QrScanPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(
-            child: AppImage(AppAssets.bgCamera, fit: BoxFit.cover),
+          Positioned.fill(
+            child: Transform.scale(
+              scale: 1.4,
+              alignment: const Alignment(0, -0.28),
+              child: const AppImage(
+                AppAssets.bgCamera,
+                fit: BoxFit.cover,
+                alignment: Alignment(0.45, 0),
+              ),
+            ),
           ),
           const Positioned.fill(
             child: CustomPaint(

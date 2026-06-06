@@ -8,6 +8,7 @@ class AppImage extends StatelessWidget {
     this.height,
     this.color,
     this.fit,
+    this.alignment = Alignment.center,
   });
 
   final String asset;
@@ -15,6 +16,7 @@ class AppImage extends StatelessWidget {
   final double? height;
   final Color? color;
   final BoxFit? fit;
+  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class AppImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
+      alignment: alignment,
       color: color,
       colorBlendMode: color == null ? null : BlendMode.srcIn,
       filterQuality: FilterQuality.medium,

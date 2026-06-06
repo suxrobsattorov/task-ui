@@ -41,19 +41,22 @@ class _ChatPageState extends State<ChatPage> {
           child: Column(
             children: [
               const AppHeader(title: AppStrings.chatTitle),
-              const Gap(AppSpacing.s16),
-              const Center(child: LicensePlate()),
-              const Gap(AppSpacing.s24),
               Expanded(
-                child: ListenableBuilder(
-                  listenable: _controller,
-                  builder: (context, _) => ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-                    itemCount: _controller.messages.length,
-                    separatorBuilder: (_, _) => const Gap(AppSpacing.s12),
-                    itemBuilder: (_, i) =>
-                        _buildMessage(_controller.messages[i]),
-                  ),
+                child: Stack(
+                  alignment: AlignmentGeometry.topCenter,
+                  children: [
+                    ListenableBuilder(
+                      listenable: _controller,
+                      builder: (context, _) => ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(20, 70, 20, 12),
+                        itemCount: _controller.messages.length,
+                        separatorBuilder: (_, _) => const Gap(AppSpacing.s12),
+                        itemBuilder: (_, i) =>
+                            _buildMessage(_controller.messages[i]),
+                      ),
+                    ),
+                    Positioned(top: 10, child: LicensePlate()),
+                  ],
                 ),
               ),
               ListenableBuilder(
