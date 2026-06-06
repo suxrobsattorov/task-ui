@@ -13,18 +13,30 @@ class ChatBubble extends StatelessWidget {
 
   final TextMessage message;
 
-  static const double _maxWidth = 274;
+  static const double _padding = 12;
 
   bool get _isMe => message.author == ChatAuthor.me;
 
   @override
   Widget build(BuildContext context) {
-    final bubble = ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: _maxWidth),
-      child: GlassContainer(
-        borderRadius: _isMe ? AppRadius.br16 : AppRadius.received,
-        fill: _isMe ? AppColors.bubbleFill : const Color(0x14FFFFFF),
-        padding: const EdgeInsets.all(12),
+    // A bubble takes at most two-thirds of the screen width, and is sized to
+    // hug the text so right-aligned lines leave no empty space inside it.
+    final maxWidth = MediaQuery.sizeOf(context).width * 2 / 3;
+    final style = DefaultTextStyle.of(
+      context,
+    ).style.merge(AppTextStyles.message);
+    final textWidth = _longestLineWidth(
+      style,
+      MediaQuery.textScalerOf(context),
+      maxWidth - _padding * 2,
+    );
+
+    final bubble = GlassContainer(
+      borderRadius: _isMe ? AppRadius.br16 : AppRadius.received,
+      fill: _isMe ? AppColors.bubbleFill : const Color(0x14FFFFFF),
+      padding: const EdgeInsets.all(_padding),
+      child: SizedBox(
+        width: textWidth,
         child: Text(
           message.text,
           textAlign: _isMe ? TextAlign.right : TextAlign.left,
@@ -62,6 +74,22 @@ class ChatBubble extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// Width of the widest line after wrapping at [maxWidth], so the bubble can
+  /// shrink-wrap the text instead of stretching to the full max width.
+  double _longestLineWidth(TextStyle style, TextScaler scaler, double maxWidth) {
+    final painter = TextPainter(
+      text: TextSpan(text: message.text, style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: scaler,
+    )..layout(maxWidth: maxWidth);
+    var longest = 0.0;
+    for (final line in painter.computeLineMetrics()) {
+      if (line.width > longest) longest = line.width;
+    }
+    painter.dispose();
+    return longest.ceilToDouble();
   }
 }
 

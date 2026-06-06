@@ -13,11 +13,15 @@ class VoiceMessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     required this.playing,
+    required this.progress,
+    required this.label,
     required this.onPlayToggle,
   });
 
   final VoiceMessage message;
   final bool playing;
+  final double progress;
+  final String label;
   final VoidCallback onPlayToggle;
 
   @override
@@ -42,9 +46,9 @@ class VoiceMessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AppImage(AppAssets.wave, width: 98, height: 20),
+                      _Waveform(progress: progress),
                       const SizedBox(height: 4),
-                      Text(message.duration, style: AppTextStyles.message),
+                      Text(label, style: AppTextStyles.message),
                     ],
                   ),
                 ],
@@ -57,6 +61,55 @@ class VoiceMessageBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Static waveform that fills with the accent colour as playback progresses.
+class _Waveform extends StatelessWidget {
+  const _Waveform({required this.progress});
+
+  final double progress;
+
+  static const double _w = 98;
+  static const double _h = 20;
+
+  @override
+  Widget build(BuildContext context) {
+    const base = AppImage(AppAssets.wave, width: _w, height: _h);
+    if (progress <= 0) return base;
+
+    return SizedBox(
+      width: _w,
+      height: _h,
+      child: Stack(
+        children: [
+          const Opacity(opacity: 0.35, child: base),
+          ClipRect(
+            clipper: _ProgressClipper(progress),
+            child: const AppImage(
+              AppAssets.wave,
+              width: _w,
+              height: _h,
+              color: AppColors.accent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProgressClipper extends CustomClipper<Rect> {
+  const _ProgressClipper(this.progress);
+
+  final double progress;
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTWH(0, 0, size.width * progress, size.height);
+
+  @override
+  bool shouldReclip(_ProgressClipper oldClipper) =>
+      oldClipper.progress != progress;
 }
 
 class _PlayPause extends StatelessWidget {

@@ -29,7 +29,11 @@ class VoiceMessage extends ChatMessage {
     required super.author,
     required super.time,
     required this.duration,
+    required this.path,
   });
 
   final String duration;
+
+  /// Local file path of the recorded audio.
+  final String path;
 }

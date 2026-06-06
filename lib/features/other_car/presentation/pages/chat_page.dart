@@ -63,9 +63,11 @@ class _ChatPageState extends State<ChatPage> {
                 listenable: _controller,
                 builder: (context, _) => ChatInputBar(
                   recording: _controller.recording,
+                  recordingLabel: _controller.recordingTime,
                   onSend: _controller.sendText,
                   onStartRecording: _controller.startRecording,
                   onStopRecording: _controller.stopAndSendVoice,
+                  onCancelRecording: _controller.cancelRecording,
                 ),
               ),
             ],
@@ -80,7 +82,9 @@ class _ChatPageState extends State<ChatPage> {
     VoiceMessage() => VoiceMessageBubble(
       message: m,
       playing: _controller.isPlaying(m.id),
-      onPlayToggle: () => _controller.togglePlay(m.id),
+      progress: _controller.playProgress(m.id),
+      label: _controller.playLabel(m),
+      onPlayToggle: () => _controller.togglePlay(m),
     ),
   };
 }
