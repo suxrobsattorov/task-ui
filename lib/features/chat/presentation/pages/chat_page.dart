@@ -5,11 +5,11 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_background.dart';
 import '../../../../core/widgets/app_header.dart';
 import '../../../../core/widgets/gap.dart';
+import '../../../../core/widgets/license_plate.dart';
 import '../controllers/chat_controller.dart';
 import '../models/chat_message.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_input_bar.dart';
-import '../widgets/license_plate.dart';
 import '../widgets/voice_message_bubble.dart';
 
 class ChatPage extends StatefulWidget {

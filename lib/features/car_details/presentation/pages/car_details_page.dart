@@ -9,8 +9,8 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_header.dart';
 import '../../../../core/widgets/gap.dart';
 import '../../../../core/widgets/glass_button.dart';
+import '../../../../core/widgets/license_plate.dart';
 import '../widgets/car_showcase.dart';
-import '../widgets/license_plate.dart';
 import '../widgets/owner_note.dart';
 import '../widgets/social_links.dart';
 

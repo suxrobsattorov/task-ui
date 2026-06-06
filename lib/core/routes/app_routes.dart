@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../features/other_car/presentation/pages/car_details_page.dart';
-import '../../features/other_car/presentation/pages/chat_page.dart';
-import '../../features/other_car/presentation/pages/notification_picker_page.dart';
-import '../../features/other_car/presentation/pages/qr_scan_page.dart';
+import '../../features/car_details/presentation/pages/car_details_page.dart';
+import '../../features/chat/presentation/pages/chat_page.dart';
+import '../../features/notification/presentation/pages/notification_picker_page.dart';
+import '../../features/qr_scan/presentation/pages/qr_scan_page.dart';
 
 abstract final class Routes {
   static const String qr = '/';

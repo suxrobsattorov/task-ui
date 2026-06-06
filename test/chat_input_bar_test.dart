@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:task_ui/core/theme/app_theme.dart';
-import 'package:task_ui/features/other_car/presentation/widgets/chat_input_bar.dart';
+import 'package:task_ui/features/chat/presentation/widgets/chat_input_bar.dart';
 
 void main() {
   testWidgets('Mic button morphs through the record animation without errors', (

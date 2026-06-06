@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:task_ui/core/theme/app_theme.dart';
-import 'package:task_ui/features/other_car/presentation/pages/car_details_page.dart';
+import 'package:task_ui/features/car_details/presentation/pages/car_details_page.dart';
 
 void main() {
   testWidgets('Car details renders title and key actions', (
