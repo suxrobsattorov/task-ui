@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_durations.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -30,9 +31,25 @@ class ChatInputBar extends StatefulWidget {
   State<ChatInputBar> createState() => _ChatInputBarState();
 }
 
-class _ChatInputBarState extends State<ChatInputBar> {
+class _ChatInputBarState extends State<ChatInputBar>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   bool _hasText = false;
+
+  // Drives the press-to-record morph: 0 = idle mic (40px), 1 = recording
+  // mic (80px glowing). Grows with a slight overshoot on press and eases
+  // back on release, like the Figma prototype.
+  late final AnimationController _recordCtrl = AnimationController(
+    vsync: this,
+    duration: AppDurations.normal,
+    reverseDuration: AppDurations.fast,
+    value: widget.recording ? 1 : 0,
+  );
+  late final Animation<double> _t = CurvedAnimation(
+    parent: _recordCtrl,
+    curve: Curves.easeOutBack,
+    reverseCurve: Curves.easeInCubic,
+  );
 
   @override
   void initState() {
@@ -44,7 +61,16 @@ class _ChatInputBarState extends State<ChatInputBar> {
   }
 
   @override
+  void didUpdateWidget(covariant ChatInputBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.recording != oldWidget.recording) {
+      widget.recording ? _recordCtrl.forward() : _recordCtrl.reverse();
+    }
+  }
+
+  @override
   void dispose() {
+    _recordCtrl.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -64,92 +90,145 @@ class _ChatInputBarState extends State<ChatInputBar> {
       padding: const EdgeInsets.only(top: 12, bottom: 8),
       child: SafeArea(
         top: false,
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            // The interactive row is always mounted, so the hold gesture on the
-            // mic button keeps receiving the release event while recording.
-            _inputRow(),
-            if (widget.recording)
-              Positioned.fill(
-                child: IgnorePointer(child: _recordingOverlay()),
-              ),
-          ],
+        // The whole bar rebuilds each frame of the record morph. The mic's
+        // Listener stays mounted throughout, so a press that started the
+        // recording still receives its release while the button is grown.
+        child: AnimatedBuilder(
+          animation: _t,
+          builder: (context, _) {
+            final t = _t.value;
+            return Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                _leftPill(t),
+                _hasText ? _sendButton() : _micButton(t),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _inputRow() {
+  // Left side of the bar: the text field cross-fades into the recording pill
+  // (dot + timer) as recording ramps up.
+  Widget _leftPill(double t) {
+    final ct = t.clamp(0.0, 1.0);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(child: _pill(child: _textField())),
-          const SizedBox(width: 12),
-          _hasText
-              ? _CircleButton(
-                  color: AppColors.accent,
-                  glow: AppShadows.accentGlow,
-                  onTap: _send,
-                  child: const AppImage(
-                    AppAssets.icSend,
-                    width: 24,
-                    height: 24,
-                  ),
-                )
-              : _holdMicButton(),
+          // Full-width recording pill, fades in. Also sets the row's size.
+          Opacity(opacity: ct, child: _recordingPill()),
+          // Text field, fades out; leaves 52px on the right for the mic.
+          Positioned.fill(
+            right: 52,
+            child: Opacity(
+              opacity: 1 - ct,
+              child: IgnorePointer(
+                ignoring: t > 0,
+                child: _pill(child: _textField()),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  /// Press and hold to record, release to send (Telegram-style).
-  Widget _holdMicButton() {
-    return Listener(
-      behavior: HitTestBehavior.opaque,
-      onPointerDown: (_) {
-        FocusScope.of(context).unfocus();
-        widget.onStartRecording();
-      },
-      onPointerUp: (_) => widget.onStopRecording(),
-      onPointerCancel: (_) => widget.onCancelRecording(),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E2430), Color(0xFF1A1E26)],
-          ),
-        ),
-        child: const Center(
-          child: AppImage(AppAssets.icMic, width: 24, height: 24),
+  /// Press and hold to record, release to send (Telegram-style). The same
+  /// button grows into the big glowing recording mic via [_micMorph].
+  Widget _micButton(double t) {
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      right: 20,
+      child: Center(
+        child: Listener(
+          behavior: HitTestBehavior.opaque,
+          onPointerDown: (_) {
+            FocusScope.of(context).unfocus();
+            widget.onStartRecording();
+          },
+          onPointerUp: (_) => widget.onStopRecording(),
+          onPointerCancel: (_) => widget.onCancelRecording(),
+          child: _micMorph(t),
         ),
       ),
     );
   }
 
-  // Recording state, drawn on top of the input row (visual only): a full-width
-  // pill (dot + timer) with an 80px glowing mic button overlapping its right
-  // end, flush to the screen edge (Figma 1-7213).
-  Widget _recordingOverlay() {
-    return Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: _recordingPill(),
+  // A single 40px mic that morphs into the 80px recording mic as [t] 0->1:
+  // the circle scales about its center (idle and recording mics share the
+  // same center, so no repositioning), darkens into accent with a glow, and
+  // the icon grows 24->32 and turns white. The icon is overlaid rather than
+  // scaled with the circle so it tracks the Figma 24->32 step, not 24->48.
+  Widget _micMorph(double t) {
+    final ct = t.clamp(0.0, 1.0);
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          Transform.scale(
+            scale: 1 + t,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color.lerp(const Color(0xFF1E2430), AppColors.accent, ct)!,
+                    Color.lerp(const Color(0xFF1A1E26), AppColors.accent, ct)!,
+                  ],
+                ),
+                // Glow fades in; blur/spread are halved because Transform.scale
+                // doubles them at full size (-> 60 blur, 10px ring, as Figma).
+                boxShadow: t <= 0
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: AppColors.accent.withValues(alpha: 0.6 * ct),
+                          blurRadius: 30,
+                        ),
+                        BoxShadow(
+                          color: AppColors.accent.withValues(alpha: 0.2 * ct),
+                          spreadRadius: 5,
+                        ),
+                      ],
+              ),
+            ),
+          ),
+          AppImage(
+            AppAssets.icMic,
+            width: 24 + 8 * ct,
+            height: 24 + 8 * ct,
+            color: Color.lerp(AppColors.textMuted, AppColors.white, ct),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sendButton() {
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      right: 20,
+      child: Center(
+        child: _CircleButton(
+          color: AppColors.accent,
+          glow: AppShadows.accentGlow,
+          onTap: _send,
+          child: const AppImage(AppAssets.icSend, width: 24, height: 24),
         ),
-        const Align(
-          alignment: Alignment.centerRight,
-          child: _RecordMicButton(),
-        ),
-      ],
+      ),
     );
   }
 
@@ -218,43 +297,6 @@ class _ChatInputBarState extends State<ChatInputBar> {
       decoration: const InputDecoration.collapsed(
         hintText: AppStrings.messageHint,
         hintStyle: AppTextStyles.placeholder,
-      ),
-    );
-  }
-}
-
-/// Large glowing mic button shown while recording a voice message.
-class _RecordMicButton extends StatelessWidget {
-  const _RecordMicButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.accent,
-        boxShadow: [
-          // Soft outer glow.
-          BoxShadow(
-            color: AppColors.accent.withValues(alpha: 0.6),
-            blurRadius: 60,
-          ),
-          // 10px ring around the circle.
-          BoxShadow(
-            color: AppColors.accent.withValues(alpha: 0.2),
-            spreadRadius: 10,
-          ),
-        ],
-      ),
-      child: const Center(
-        child: AppImage(
-          AppAssets.icMic,
-          width: 32,
-          height: 32,
-          color: AppColors.white,
-        ),
       ),
     );
   }
